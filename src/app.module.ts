@@ -8,9 +8,33 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { CalendarModule } from './calendar/calendar.module';
 import { IntelligentAssistantModule } from './intelligent-assistant/intelligent-assistant.module';
 import { MlClassifierModule } from './ml-classifier/ml-classifier.module';
-
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
-  imports: [UsersModule, AuthModule, ChatModule, DashboardModule, CalendarModule, IntelligentAssistantModule, MlClassifierModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    UsersModule,
+    AuthModule,
+    ChatModule,
+    DashboardModule,
+    CalendarModule,
+    IntelligentAssistantModule,
+    MlClassifierModule,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('DB_HOST'),
+        port: Number(configService.get<string>('DB_PORT')),
+        username: configService.get<string>('DB_USER'),
+        password: configService.get<string>('DB_PASS'),
+        database: configService.get<string>('DB_NAME'),
+        autoLoadEntities: true,
+        synchronize: true,
+      }),
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
