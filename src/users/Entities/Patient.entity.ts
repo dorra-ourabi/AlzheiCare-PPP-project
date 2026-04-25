@@ -4,7 +4,7 @@ import { User } from './User.entity';
 import { Column } from 'typeorm';
 import { IsDate, IsDateString } from 'class-validator';
 
-export class PatientEntity extends PartialType(User) {
+export class PatientEntity extends User {
      @Column({nullable: false, })
      @IsDateString()
      DateOfBirth?: Date;

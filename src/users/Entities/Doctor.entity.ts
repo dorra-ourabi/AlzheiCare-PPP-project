@@ -5,7 +5,7 @@ import { Column } from 'typeorm';
 import { IsNotEmpty } from 'class-validator/types/decorator/common/IsNotEmpty';
 import { IsString } from 'class-validator/types/decorator/typechecker/IsString';
 
-export class DoctorEntity extends PartialType(User) {
+export class DoctorEntity extends User {
     @Column({
         nullable:false,
         unique:true
