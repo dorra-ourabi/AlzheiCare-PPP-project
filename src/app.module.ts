@@ -8,10 +8,11 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { CalendarModule } from './calendar/calendar.module';
 import { IntelligentAssistantModule } from './intelligent-assistant/intelligent-assistant.module';
 import { MlClassifierModule } from './ml-classifier/ml-classifier.module';
+import { UserService } from './user/user.service';
 
 @Module({
   imports: [UsersModule, AuthModule, ChatModule, DashboardModule, CalendarModule, IntelligentAssistantModule, MlClassifierModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, UserService],
 })
 export class AppModule {}
