@@ -26,7 +26,7 @@ export class UserController {
     SubscribeUser(@Body() createUserDto: CreateUserDto) {
         return this.userService.create(createUserDto);
     }
-    @Put('modif/:id')
+    @Put('modif/:username')
     modifUser(
         @Body() createUserDto: CreateUserDto,
         @Param('id', ParseIntPipe) id: number,
@@ -37,9 +37,5 @@ export class UserController {
     deleteUser(@Param('id', ParseIntPipe) id: number): string {
         this.userService.remove(id);
         return `I'm a user with a specific id #${id} deleted from the database`;
-    }
-    @Post('login')
-    Login(@Body() loginDto: LoginCredentialsDto) {
-        return this.userService.Login(loginDto);
     }
 }
