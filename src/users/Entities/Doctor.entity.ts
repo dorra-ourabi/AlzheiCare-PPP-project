@@ -2,8 +2,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { User } from './User.entity';
 import { Column } from 'typeorm';
-import { IsNotEmpty } from 'class-validator/types/decorator/common/IsNotEmpty';
-import { IsString } from 'class-validator/types/decorator/typechecker/IsString';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class DoctorEntity extends User {
     @Column({

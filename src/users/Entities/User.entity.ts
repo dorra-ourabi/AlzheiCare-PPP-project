@@ -14,6 +14,18 @@ export class User extends Generic{
         }
     )
     username?: string;
+     @Column(
+        {
+        nullable: false
+        }
+    )
+    firstName?: string;
+     @Column(
+        {
+        nullable: false
+        }
+    )
+    secondName?: string;
     @IsEmail()
     @Column(
         {unique: true,

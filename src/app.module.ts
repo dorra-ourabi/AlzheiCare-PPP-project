@@ -21,7 +21,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     IntelligentAssistantModule,
     MlClassifierModule,
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule,UsersModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
