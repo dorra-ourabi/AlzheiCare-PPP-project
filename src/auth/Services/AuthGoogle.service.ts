@@ -1,9 +1,5 @@
 // auth-google.service.ts
-import {
-  HttpStatus,
-  Injectable,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LoginTicket, OAuth2Client } from 'google-auth-library';
 
@@ -26,10 +22,13 @@ export class AuthGoogleService {
     loginDto: AuthGoogleLoginDto,
   ): Promise<SocialProfile> {
     if (!loginDto.idToken) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: { user: 'wrongToken' },
-      });
+      throw new HttpException(
+        {
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: { user: 'wrongToken' },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     }
 
     const ticket: LoginTicket = await this.google.verifyIdToken({
@@ -40,10 +39,13 @@ export class AuthGoogleService {
     const data = ticket.getPayload();
 
     if (!data) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: { user: 'wrongToken' },
-      });
+      throw new HttpException(
+        {
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: { user: 'wrongToken' },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     }
 
     return {

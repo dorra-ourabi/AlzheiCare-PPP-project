@@ -129,21 +129,21 @@ export class AuthService {
   }
 
   private accessSecret() {
-    return this.configService.get<string>('JWT_ACCESS_SECRET') || 'dev_access_secret';
+    return this.configService.get<string>('JWT_ACCESS_SECRET');
   }
 
   private refreshSecret() {
-    return this.configService.get<string>('JWT_REFRESH_SECRET') || 'dev_refresh_secret';
+    return this.configService.get<string>('JWT_REFRESH_SECRET') ;
   }
 
   private accessExpires() {
-    const raw = this.configService.get<string>('JWT_ACCESS_EXPIRES') || '15m';
-    return this.parseExpiresToSeconds(raw, 15 * 60);
+    const raw = this.configService.get('JWT_ACCESS_EXPIRES');
+    return this.parseExpiresToSeconds(raw, 60 * 15);
   }
 
   private refreshExpires() {
-    const raw = this.configService.get<string>('JWT_REFRESH_EXPIRES') || '10y';
-    return this.parseExpiresToSeconds(raw, 60 * 60 * 24 * 365 * 10);
+    const raw = this.configService.get('JWT_REFRESH_EXPIRES') ;
+    return this.parseExpiresToSeconds(raw, 60 * 60 * 24*7 );
   }
 
   private parseExpiresToSeconds(value: string, fallback: number) {
