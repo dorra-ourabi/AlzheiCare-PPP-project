@@ -120,6 +120,7 @@ export class AuthService {
     await this.redisService.set(this.sessionKey(sessionId), this.hashToken(refreshToken), ttlSeconds);
   }
 
+
   private hashToken(token: string) {
     return createHash('sha256').update(token).digest('hex');
   }
