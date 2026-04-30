@@ -1,5 +1,12 @@
+import { CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from 'typeorm';
 
 export class Generic {
-CreatedAt ?: Date;
-DeletedAt ?: Date;
-UpdatedAt ?: Date   }
+  @CreateDateColumn()
+  CreatedAt?: Date;
+
+  @DeleteDateColumn()
+  DeletedAt?: Date;
+
+  @UpdateDateColumn()
+  UpdatedAt?: Date;
+}

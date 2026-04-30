@@ -26,7 +26,7 @@ export class UserController {
     getUserById(@Param('id', ParseIntPipe) id: number) {
         return this.userService.findOne(id);
     }
-    @UseGuards(JwtAuthGuard)
+   // @UseGuards(JwtAuthGuard)
     @Post('add') 
     SubscribeUser(@Body() createUserDto: CreateUserDto) {
         return this.userService.create(createUserDto);
@@ -39,7 +39,7 @@ export class UserController {
     ) {
         return this.userService.update(id, createUserDto);
     }
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Delete('delete/:id')
     deleteUser(@Param('id', ParseIntPipe) id: number): string {
         this.userService.remove(id);

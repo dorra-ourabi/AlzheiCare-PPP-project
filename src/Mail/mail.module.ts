@@ -1,15 +1,13 @@
 // src/mail/mail.module.ts
 import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/adapters/handlebars.adapter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { join } from 'path';
-import { MailService } from 'c:/Users/JABRANE/NestJsProjects/ppp/alzheicare/src/Mail/Mail.service';
-import { UsersModule } from 'src/users/users.module';
+import { MailService } from './mail.service';
+
 @Module({
   imports: [
     MailerModule.forRootAsync({
-      imports: [ConfigModule, UsersModule],
+      imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
         transport: {
           host: config.get<string>('MAIL_HOST'),
@@ -23,11 +21,7 @@ import { UsersModule } from 'src/users/users.module';
         defaults: {
           from: `"AlzheiCare" <${config.get<string>('MAIL_FROM')}>`,
         },
-        template: {
-          dir: join(__dirname, 'templates'),
-          adapter: new HandlebarsAdapter(),
-          options: { strict: true },
-        },
+        // ← no template config at all
       }),
       inject: [ConfigService],
     }),
