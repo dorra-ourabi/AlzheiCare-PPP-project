@@ -6,6 +6,7 @@ import { DoctorEntity } from './Entities/Doctor.entity';
 import { PatientEntity } from './Entities/Patient.entity';
 import { User } from './Entities/User.entity';
 import { UserService } from './Services/user.service';
+import { MailModule } from 'src/Mail/mail.module';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { UserService } from './Services/user.service';
       secret: process.env.JWT_SECRET || 'dev_secret',
       signOptions: { expiresIn: '1h' },
     }),
-  ],
+  MailModule],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

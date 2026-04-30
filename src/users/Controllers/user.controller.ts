@@ -16,7 +16,7 @@ import { JwtAuthGuard } from '../../auth/Guards/jwt.guard';
 @Controller('users')
 export class UserController {
     constructor(private readonly userService: UserService) {}
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Get()
     getUsers() {
         return this.userService.findAll();

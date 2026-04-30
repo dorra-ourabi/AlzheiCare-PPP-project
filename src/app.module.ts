@@ -10,6 +10,7 @@ import { IntelligentAssistantModule } from './intelligent-assistant/intelligent-
 import { MlClassifierModule } from './ml-classifier/ml-classifier.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MailModule } from './Mail/mail.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -34,6 +35,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         synchronize: true,
       }),
     }),
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

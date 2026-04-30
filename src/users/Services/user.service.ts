@@ -29,11 +29,14 @@ export class UserService {
     }
     newUser.salt = await bcrypt.genSalt(10);
     newUser.password = await bcrypt.hash(password, newUser.salt);
+    newUser.isEmailVerified = false ;
+    newUser.emailVerificationToken = Math.random().toString(36).substring(2);
+    newUser.emailVerificationExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) ;
     try{await this.userRepository.save(newUser);}
     catch( e){
         console.error('Error creating user:', e);
         throw new ConflictException('Email already exists or name already exists');}
-        
+    newUser.CreatedAt = new Date() ;
      
         
     return {
@@ -49,6 +52,7 @@ export class UserService {
       throw new Error(`User with id ${id} not found.`);
     }
     const updatedUser = this.userRepository.merge(existingUser, user);
+    updatedUser.UpdatedAt = new Date();
     return await this.userRepository.save(updatedUser);
   }
   async remove(id: number){
@@ -56,6 +60,7 @@ export class UserService {
     if (!existingUser) {
       throw new Error(`User with id ${id} not found.`);
     }   
+
     await this.userRepository.remove(existingUser);
     }
 
