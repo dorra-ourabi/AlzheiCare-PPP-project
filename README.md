@@ -1,12 +1,12 @@
-# AlzheivCare
+# AlzheiCare
 
 A platform designed to help Alzheimer's patients and their families track the illness, stay connected with their doctor, and manage daily care — all in one place.
 
 ---
 
-## What is AlzheivCare?
+## What is AlzheiCare?
 
-AlzheivCare is a full-stack web and mobile platform built around the patient. A caregiver creates an account on behalf of their loved one, and from there they can monitor the patient's location in real time, chat with the assigned doctor, log daily observations, and track medications — while an AI assistant is always available to answer questions about Alzheimer's.
+AlzheiCare is a full-stack web platform built around the patient. A caregiver creates an account on behalf of their loved one, and from there they can monitor the patient's location in real time, chat with the assigned doctor, log daily observations, and track medications — while an AI assistant is always available to answer questions about Alzheimer's.
 
 The platform is designed with one goal in mind: make caregiving less overwhelming.
 
@@ -27,10 +27,9 @@ The platform is designed with one goal in mind: make caregiving less overwhelmin
 
 | Layer     | Technology                      |
 | --------- | ------------------------------- |
-| Mobile    | React Native                    |
 | Web       | React                           |
 | Backend   | NestJS (Node.js + TypeScript)   |
-| Database  | PostgreSQL via Prisma           |
+| Database  | PostgreSQL via typeORM & Redis  |
 | Cache     | Redis                           |
 | ML & AI   | FastAPI (Python) + scikit-learn |
 | Real-time | Socket.io                       |
@@ -42,25 +41,27 @@ The platform is designed with one goal in mind: make caregiving less overwhelmin
 ## Project Structure
 
 ```
+
 alzheicare/
 ├── application/          # NestJS backend
 │   ├── src/
 │   │   ├── auth/         # Authentication — Google OAuth + Local
 │   │   ├── users/        # Caregiver, Doctor, Admin
-│   │   ├── patient/      # Patient accounts
 │   │   ├── chat/         # Real-time messaging
 │   │   ├── gps/          # GPS tracking & geofencing
 │   │   ├── calendar/     # Medications & appointments
 │   │   ├── stage/        # Stage classifier
 │   │   ├── games/        # Cognitive games
-│   │   ├── ai/           # AI assistant
+│   │   ├── Ai-assistant/           # AI assistant
 │   │   └── notifications/# Push notifications
+│   │   └── Mail/         # mail service
+│   │   └── Generic/      # collection of common attributes
+│   │   └── Guards/       # guards of the application
+│   │   └── Decorators/   # decorators for users
 │   ├── prisma/
 │   │   └── schema.prisma # Full database schema
 │   └── .env.example
-├── ml-service/           # FastAPI Python service
-├── mobile/               # React Native app
-├── web/                  # React web dashboard
+├── Alzheicare-front/                  # React web dashboard
 ├── docker-compose.yml
 └── README.md
 ```
