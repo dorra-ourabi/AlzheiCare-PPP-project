@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsObject, IsOptional } from 'class-validator';
 export class AuthTokensDto {
     @IsString()
     @IsNotEmpty()
@@ -6,4 +6,13 @@ export class AuthTokensDto {
     @IsString()
     @IsNotEmpty()
   refreshToken!: string;
+    @IsObject()
+    @IsOptional()
+  user?: {
+    id: number;
+    username: string;
+    email?: string;
+    firstName?: string;
+    secondName?: string;
+  };
 }
