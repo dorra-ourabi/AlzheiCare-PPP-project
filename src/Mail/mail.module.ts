@@ -21,12 +21,11 @@ import { MailService } from './mail.service';
         defaults: {
           from: `"AlzheiCare" <${config.get<string>('MAIL_FROM')}>`,
         },
-        // ← no template config at all
       }),
       inject: [ConfigService],
     }),
   ],
   providers: [MailService],
-  exports: [MailService],
+  exports: [MailService, MailerModule],
 })
 export class MailModule {}
