@@ -1,7 +1,8 @@
 import { Generic } from "src/Generic/generic";
 import { UserRole } from "../Enums/User.enum";
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { IsEmail, IsNotEmpty } from "class-validator";
+import { CalendarEvent } from "../../calendar/Entities/calendar-event.entity";
 
 @Entity('User')
 export class User extends Generic {
@@ -22,7 +23,7 @@ export class User extends Generic {
     @Column({ unique: true, nullable: false })
     email?: string;
 
-    @Column({ nullable: false, unique: true })
+    @Column({ nullable: false })
     password?: string;
 
     @Column({
@@ -41,4 +42,13 @@ export class User extends Generic {
 
     @Column({ type: 'boolean', default: false })
     isEmailVerified?: boolean;
+
+    @Column({ type: 'varchar', nullable: true })
+    googleAccessToken?: string | null;
+
+    @Column({ type: 'varchar', nullable: true })
+    googleRefreshToken?: string | null;
+
+    @OneToMany(() => CalendarEvent, event => event.user)
+    events?: CalendarEvent[];
 }
