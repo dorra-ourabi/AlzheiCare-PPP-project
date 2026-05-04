@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -14,6 +15,7 @@ import { MailModule } from './Mail/mail.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ScheduleModule.forRoot(),
     UsersModule,
     AuthModule,
     ChatModule,
@@ -24,16 +26,20 @@ import { MailModule } from './Mail/mail.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule,UsersModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: Number(configService.get<string>('DB_PORT')),
-        username: configService.get<string>('DB_USER'),
-        password: configService.get<string>('DB_PASS'),
-        database: configService.get<string>('DB_NAME'),
-        autoLoadEntities: true,
-        synchronize: true,
-      }),
+      useFactory: (configService: ConfigService) => {
+        console.log('DB_PASS:', configService.get<string>('DB_PASS'));
+        console.log('DB_USER:', configService.get<string>('DB_USER'));
+        return {
+          type: 'postgres',
+          host: configService.get<string>('DB_HOST'),
+          port: Number(configService.get<string>('DB_PORT')),
+          username: configService.get<string>('DB_USER'),
+          password: configService.get<string>('DB_PASS'),
+          database: configService.get<string>('DB_NAME'),
+          autoLoadEntities: true,
+          synchronize: true,
+        };
+      },
     }),
     MailModule,
   ],
