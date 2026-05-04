@@ -20,7 +20,7 @@ export class AuthGoogleController {
   })
   async login(
     @Body() loginDto: AuthGoogleLoginDto,
-  ): Promise<SocialProfile> {
+  ): Promise<{ accessToken: string; user: SocialProfile }> {
     return this.service.getProfileByToken(loginDto);
   }
 }
