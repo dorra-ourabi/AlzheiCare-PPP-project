@@ -42,7 +42,16 @@ export class AuthService {
 
     await this.storeRefreshHash(sessionId, tokens.refreshToken);
 
-    return tokens;
+    return {
+      ...tokens,
+      user: {
+        id: user.id!,
+        username: user.username!,
+        email: user.email,
+        firstName: user.firstName,
+        secondName: user.secondName,
+      },
+    };
   }
 
   async refresh(dto: RefreshTokenDto): Promise<AuthTokensDto> {
