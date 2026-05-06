@@ -22,7 +22,7 @@ export class User extends Generic {
     @Column({ unique: true, nullable: false })
     email?: string;
 
-    @Column({ nullable: false, unique: true })
+    @Column({ nullable: false })
     password?: string;
 
     @Column({
