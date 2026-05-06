@@ -69,7 +69,126 @@ export class CalendarService {
       googleRefreshToken: nextRefreshToken,
     });
 
+    try {
+      await this.registerGoogleWebhook(payload.sub);
+    } catch (error) {
+      // Do not block login if webhook registration fails.
+      console.warn('Google webhook registration skipped:', error instanceof Error ? error.message : error);
+    }
+
     return { tokens, userId: payload.sub, role: payload.role };
+  }
+
+  async registerGoogleWebhook(userId: number) {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (!user.googleAccessToken || !user.googleRefreshToken) {
+      throw new BadRequestException('Google Calendar is not connected for this user');
+    }
+
+    const webhookUrl = this.configService.get<string>('GOOGLE_WEBHOOK_URL');
+    if (!webhookUrl) {
+      throw new BadRequestException('GOOGLE_WEBHOOK_URL is not configured');
+    }
+
+    const oauth2Client = this.getOAuthClient();
+    oauth2Client.setCredentials({
+      access_token: user.googleAccessToken,
+      refresh_token: user.googleRefreshToken,
+    });
+
+    const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+    const channelId = randomUUID();
+
+    const watchResponse = await calendar.events.watch({
+      calendarId: 'primary',
+      requestBody: {
+        id: channelId,
+        type: 'web_hook',
+        address: webhookUrl,
+      },
+    });
+
+    await this.userRepo.update(userId, {
+      googleCalendarChannelId: channelId,
+      googleCalendarResourceId: watchResponse.data.resourceId ?? null,
+      googleCalendarChannelExpiresAt: watchResponse.data.expiration
+        ? Number(watchResponse.data.expiration)
+        : null,
+    });
+
+    return {
+      channelId,
+      resourceId: watchResponse.data.resourceId,
+      expiration: watchResponse.data.expiration,
+    };
+  }
+
+  async handleGoogleWebhook(headers: Record<string, string | string[] | undefined>) {
+    const channelId = this.getHeaderValue(headers, 'x-goog-channel-id');
+    const resourceId = this.getHeaderValue(headers, 'x-goog-resource-id');
+    const resourceState = this.getHeaderValue(headers, 'x-goog-resource-state');
+
+    if (!channelId || !resourceId) {
+      return { handled: false };
+    }
+
+    if (resourceState === 'sync') {
+      return { handled: true };
+    }
+
+    const user = await this.userRepo.findOne({
+      where: {
+        googleCalendarChannelId: channelId,
+        googleCalendarResourceId: resourceId,
+      },
+    });
+
+    if (!user || !user.googleAccessToken || !user.googleRefreshToken) {
+      return { handled: false };
+    }
+
+    const oauth2Client = this.getOAuthClient();
+    oauth2Client.setCredentials({
+      access_token: user.googleAccessToken,
+      refresh_token: user.googleRefreshToken,
+    });
+
+    const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+    const listParams: any = {
+      calendarId: 'primary',
+      singleEvents: true,
+      showDeleted: true,
+      maxResults: 250,
+    };
+
+    if (user.googleCalendarSyncToken) {
+      listParams.syncToken = user.googleCalendarSyncToken;
+    } else {
+      listParams.timeMin = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    }
+
+    const listResponse = await calendar.events.list(listParams);
+    const nextSyncToken = listResponse.data.nextSyncToken ?? null;
+
+    if (nextSyncToken) {
+      await this.userRepo.update(user.id!, {
+        googleCalendarSyncToken: nextSyncToken,
+      });
+    }
+
+    return { handled: true, items: listResponse.data.items ?? [] };
+  }
+
+  private getHeaderValue(headers: Record<string, string | string[] | undefined>, key: string) {
+    const value = headers[key] ?? headers[key.toLowerCase()];
+    if (Array.isArray(value)) {
+      return value[0];
+    }
+    return value;
   }
 
   async getUpcomingEvents(userId: number) {

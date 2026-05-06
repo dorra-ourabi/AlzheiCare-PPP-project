@@ -49,6 +49,18 @@ export class User extends Generic {
     @Column({ type: 'varchar', nullable: true })
     googleRefreshToken?: string | null;
 
+    @Column({ type: 'varchar', nullable: true })
+    googleCalendarChannelId?: string | null;
+
+    @Column({ type: 'varchar', nullable: true })
+    googleCalendarResourceId?: string | null;
+
+    @Column({ type: 'varchar', nullable: true })
+    googleCalendarSyncToken?: string | null;
+
+    @Column({ type: 'bigint', nullable: true })
+    googleCalendarChannelExpiresAt?: number | null;
+
     @OneToMany(() => CalendarEvent, event => event.user)
     events?: CalendarEvent[];
 }

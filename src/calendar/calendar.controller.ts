@@ -61,6 +61,18 @@ export class CalendarController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Post('webhook/watch')
+  async registerWebhook(@Req() req: any) {
+    const userId = this.getUserId(req);
+    return this.calendarService.registerGoogleWebhook(userId);
+  }
+
+  @Post('webhook')
+  async handleWebhook(@Req() req: any) {
+    return this.calendarService.handleGoogleWebhook(req.headers ?? {});
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch('events/:id')
   async updateEvent(
     @Param('id') id: string,
